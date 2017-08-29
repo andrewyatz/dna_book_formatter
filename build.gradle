@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+  mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version =  '0.1.0'
+
+jar {
+  baseName = 'dna-formatter'
+  manifest {
+    attributes  'Implementation-Title': 'DNA formatter',
+                'Implementaton-Version' : version,
+                'Main-Class': 'dnaformatter.Main'
+  }
+}
