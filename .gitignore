@@ -1,0 +1,14 @@
+*.fa.*gz
+*.fa
+/build
+/.gradle
+/.settings
+/.vscode
+/.project
+*.html
+/.vstags
+*.gff*
+/.classpath
+*.class
+*.pm
+*.t
