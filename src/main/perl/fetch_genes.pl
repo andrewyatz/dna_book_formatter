@@ -56,9 +56,40 @@ while ( my $gene = shift @{$genes} ) {
       print $fh join("\t", $chr, $utr->seq_region_start()-1, $utr->seq_region_end(), 'UTR');
       print $fh "\n";
     }
-    foreach my $exon (@{$canonical->get_all_translateable_Exons()}) {
-      print $fh join("\t", $chr, $exon->seq_region_start()-1, $exon->seq_region_end(), 'CDS');
-      print $fh "\n";
+    my $trans_exons = $canonical->get_all_translateable_Exons();
+    my $length = scalar(@{$trans_exons});
+    my $iter = 1;
+    foreach my $exon (@{$trans_exons}) {
+      my $exon_start = $exon->seq_region_start();
+      my $exon_end = $exon->seq_region_end();
+      my @leading_codon;
+      my @trailing_codon;
+      if($iter == 1) { #first exon check init exon
+        my $codon_start = $exon_start;
+        my $codon_end = $exon_start+2;
+        $exon_start = $exon_start+3;
+        my $codon_type = ($canonical->seq_region_strand() == -1) ? 'ENDCODON' : 'STARTCODON';
+		    @leading_codon = ($chr, $codon_start-1, $codon_end, $codon_type);
+      }
+	    if($iter == $length) { # last exon check; alter
+        my $codon_start = $exon_end - 2;
+        my $codon_end = $exon_end;
+        $exon_end = $exon_end-3;
+        my $codon_type = ($canonical->seq_region_strand() == -1) ? 'STARTCODON' : 'ENDCODON';
+        @trailing_codon = ($chr, $codon_start-1, $codon_end, $codon_type);
+	    }
+      if(@leading_codon) {
+        print $fh join("\t", @leading_codon);
+        print $fh "\n";
+      }
+      if($exon_start != $exon_end) {
+        print $fh join("\t", $chr, $exon_start-1, $exon_end, 'CDS');
+        print $fh "\n";
+      }
+      if(@trailing_codon) {
+        print $fh join("\t", @trailing_codon);
+        print $fh "\n";
+      }
     }
     foreach my $utr (@{$canonical->get_all_three_prime_UTRs()}) {
       print $fh join("\t", $chr, $utr->seq_region_start()-1, $utr->seq_region_end(), 'UTR');
