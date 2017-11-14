@@ -52,14 +52,26 @@ while ( my $gene = shift @{$genes} ) {
   }
 
   if($type eq 'CODING') {
+    my $utrs = $canonical->get_all_five_prime_UTRs();
+    my $last_five_prime_utr = undef;
     foreach my $utr (@{$canonical->get_all_five_prime_UTRs()}) {
+      if($last_five_prime_utr) {
+        write_intron($last_five_prime_utr, $utr);
+      }
       print $fh join("\t", $chr, $utr->seq_region_start()-1, $utr->seq_region_end(), 'UTR');
       print $fh "\n";
+      $last_five_prime_utr = $utr;
     }
     my $trans_exons = $canonical->get_all_translateable_Exons();
     my $length = scalar(@{$trans_exons});
     my $iter = 1;
+    my $last_exon = undef;
     foreach my $exon (@{$trans_exons}) {
+
+      if($last_exon) { # only trigger when we have a last exon
+        write_intron($last_exon, $exon);
+      }
+
       my $exon_start = $exon->seq_region_start();
       my $exon_end = $exon->seq_region_end();
       my @leading_codon;
@@ -90,10 +102,18 @@ while ( my $gene = shift @{$genes} ) {
         print $fh join("\t", @trailing_codon);
         print $fh "\n";
       }
+
+      $last_exon = $exon;
+      $iter++;
     }
+    my $last_three_prime_utr = undef;
     foreach my $utr (@{$canonical->get_all_three_prime_UTRs()}) {
+      if($last_three_prime_utr) {
+        write_intron($last_three_prime_utr, $utr);
+      }
       print $fh join("\t", $chr, $utr->seq_region_start()-1, $utr->seq_region_end(), 'UTR');
       print $fh "\n";
+      $last_three_prime_utr = $utr;
     }
   }
   else {
@@ -102,4 +122,13 @@ while ( my $gene = shift @{$genes} ) {
       print $fh "\n";
     }
   }
+}
+
+sub write_intron {
+  my ($last_exon, $exon) = @_;
+  my $intron_start = $last_exon->seq_region_end()+1;
+  my $intron_end = $exon->seq_region_start()-1;
+  print $fh join("\t", $chr, $intron_start-1, $intron_end, 'INTRON');
+  print $fh "\n";
+  return;
 }
