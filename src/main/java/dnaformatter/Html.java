@@ -45,9 +45,17 @@ public class Html {
     ps.println("}");
     for(State state: State.values()) {
       ps.println("."+state.toString()+" {");
-      ps.println("color: "+state.getColour()+";");
+      if(state.isBackgroundColour()) {
+        ps.println("background-color: " + state.getColour() + ";");  
+      }
+      else {
+        ps.println("color: "+state.getColour()+";");
+      }
       if(state.isUpperCase()) {
         ps.println("text-transform: uppercase;");
+      }
+      if(state.isBold()) {
+        ps.println("font-weight: bold;");
       }
       ps.println("}");
     }

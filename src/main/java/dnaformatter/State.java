@@ -16,22 +16,25 @@ package dnaformatter;
 
 public enum State {
 
-  GENOMIC("black", false, false), 
-  UTR("green", false, true), 
-  CDS("red", true, true), 
-  NONCODING("blue", true, true), 
-  PSEUDOGENE("grey", true, true),
-  STARTCODON("red", true, true),
-  ENDCODON("red", true, true);
+  GENOMIC("black", false, false, false), 
+  NONCODING("black", false, false, false), 
+  STARTCODON("red", true, true, true),
+  UTR("yellow", false, true, true), 
+  CDS("orange", true, true, true), 
+  INTRON("yellow", true, true, true),
+  ENDCODON("red", true, true, true),
+  PSEUDOGENE("grey", true, true, true);
 
   private String colour;
   private boolean upperCase;
   private boolean backgroundColour;
+  private boolean bold;
 
-  private State(String colour, boolean upperCase, boolean backgroundColour) {
+  private State(String colour, boolean upperCase, boolean backgroundColour, boolean bold) {
     this.colour = colour;
     this.upperCase = upperCase;
     this.backgroundColour = backgroundColour;
+    this.bold = bold;
   }
 
   public String getColour() {
@@ -44,6 +47,10 @@ public enum State {
 
   public boolean isBackgroundColour() {
     return this.backgroundColour;
+  }
+
+  public boolean isBold() {
+    return this.bold;
   }
 
   public static State ignoreCaseValueOf(String valueOf) {
