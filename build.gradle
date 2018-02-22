@@ -1,8 +1,14 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
+// apply plugin: 'eclipse'
 
 repositories {
   mavenCentral()
+}
+
+dependencies {
+  // https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf
+  compile group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.1.9'
+  // runtime group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.1.9'
 }
 
 sourceCompatibility = 1.8
@@ -16,4 +22,20 @@ jar {
                 'Implementaton-Version' : version,
                 'Main-Class': 'dnaformatter.Main'
   }
+}
+
+task jarHtmlToPdf(type: Jar) {
+  baseName = 'html-to-pdf'
+  manifest {
+    attributes  'Implementation-Title': 'PDF writer',
+                'Implementaton-Version' : version,
+                'Main-Class': 'dnaformatter.PdfMain'
+  }
+}
+
+task myRun(type: JavaExec, dependsOn: 'jar') {
+  classpath sourceSets.main.runtimeClasspath
+  main = "dnaformatter.PdfMain"
+  jvmArgs '-Xmx4096m', '-Xms4096m'
+  // args "new-350by350-250.html", "new-350by350-250perline.pdf"
 }

@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,8 @@ import java.util.List;
 
 public class Html {
 
-  public static final int DEFAULT_WIDTH = 150;
+  public static final String PAGE_SIZE = "size: 350mm 350mm;";
+  public static final int DEFAULT_WIDTH = 200;
 
   private int basesPerLine;
   private PrintStream ps;
@@ -35,10 +36,13 @@ public class Html {
   }
 
   public void printHeader() {
-    ps.println("<html>");
+    ps.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
+    ps.println("<head>");
     ps.println("<style>");
+    ps.println("@page { "+PAGE_SIZE+"}");
     ps.println("body {");
     ps.println("font-family: monospace;");
+    ps.println("font-size: 9px;");
     ps.println("}");
     ps.println(".pos {");
     ps.println("font-weight: bold;");
@@ -46,7 +50,7 @@ public class Html {
     for(State state: State.values()) {
       ps.println("."+state.toString()+" {");
       if(state.isBackgroundColour()) {
-        ps.println("background-color: " + state.getColour() + ";");  
+        ps.println("background-color: " + state.getColour() + ";");
       }
       else {
         ps.println("color: "+state.getColour()+";");
@@ -60,6 +64,7 @@ public class Html {
       ps.println("}");
     }
     ps.println("</style>");
+    ps.println("</head>");
     ps.println("<body>");
   }
 
@@ -83,8 +88,9 @@ public class Html {
     int totalLength = seqList.size();
     int lengthWidth = Integer.toString(totalLength).length();
     int maxCoord = 0;
-    String numberPaddingFormat = "<span class='pos'>%0"+lengthWidth+"d</span>&nbsp;&nbsp;";
-    
+    //Use &#xA0; and not &nbsp; because the PDF code does not like the later
+    String numberPaddingFormat = "<span class='pos'>%0"+lengthWidth+"d</span>&#xA0;&#xA0;";
+
     for(int minCoord = 0; minCoord < totalLength; minCoord += this.basesPerLine) {
       maxCoord += this.basesPerLine;
       if(maxCoord > totalLength) {

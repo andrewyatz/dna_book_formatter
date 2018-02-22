@@ -12,3 +12,7 @@
 *.class
 *.pm
 *.t
+*.pdf
+*.html
+*.bed
+

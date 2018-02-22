@@ -18,12 +18,13 @@ public enum State {
 
   GENOMIC("black", false, false, false), 
   NONCODING("black", false, false, false), 
-  STARTCODON("red", true, true, true),
-  UTR("yellow", false, true, true), 
-  CDS("orange", true, true, true), 
-  INTRON("yellow", true, true, true),
-  ENDCODON("red", true, true, true),
-  PSEUDOGENE("grey", true, true, true);
+  STARTCODON("#FAEB00", false, true, false),
+  UTR("#FAEB00", false, true, false), 
+  CDS("#FAEB00", false, true, false), 
+  INTRON("#ffffaa", false, true, false),
+  ENDCODON("#FAEB00", false, true, false),
+  CODON("#FAEB00", false, true, false),
+  PSEUDOGENE("#dddddd", false, true, false);
 
   private String colour;
   private boolean upperCase;
