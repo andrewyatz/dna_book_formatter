@@ -15,27 +15,57 @@
 use strict;
 use warnings;
 
+use Bio::EnsEMBL::ApiVersion;
 use Bio::EnsEMBL::Registry;
 use Bio::EnsEMBL::DBSQL::DBConnection;
 
-my $output = $ARGV[0];
+use Getopt::Long;
+
+my $output;
+my $chromosome;
+my ($host, $user, $port, $species, $production_db);
+GetOptions(
+  'output=s' => \$output,
+  'chromosome=s' => \$chromosome,
+  'host=s' => \$host,
+  'port=i' => \$port,
+  'user=s' => \$user,
+  'species=s' => \$species,
+  'production_db=s' => \$production_db) or die "Could not parse command line args";
+
+$host //= 'ensembldb.ensembl.org';
+$port //= 3306;
+$user //= 'anonymous';
+$production_db //= 'ensembl_production_'.Bio::EnsEMBL::ApiVersion::software_version();
+$species //= 'homo_sapiens';
+
+die "No chromosome given" if !$chromosome;
+die "No output location given" if !$output;
 open my $fh, '>', $output or die "Cannot open $output for writing: $?";
 
-my $chr = '22';
-
-my %args = (-HOST => 'ensembldb.ensembl.org', -USER => 'anonymous');
+warn 'Connecting to database server '.$host;
+my %args = (-HOST => $host, -USER => $user, -PORT => $port);
+warn 'Loading database registry';
 Bio::EnsEMBL::Registry->load_registry_from_db(%args);
-my $dbc = Bio::EnsEMBL::DBSQL::DBConnection->new(%args, -DBNAME => 'ensembl_production_90' );
+warn 'Connecting to '.$production_db;
+my $dbc = Bio::EnsEMBL::DBSQL::DBConnection->new(%args, -DBNAME => $production_db );
 
 my @biotypes = qw/protein_coding pseudogene polymorphic_pseudogene processed_pseudogene transcribed_processed_pseudogene transcribed_unitary_pseudogene transcribed_unprocessed_pseudogene unitary_pseudogene unprocessed_pseudogene/;
 my $group_lookup = $dbc->sql_helper()->execute_into_hash(-SQL => 'select name, biotype_group from biotype');
 
-my $sa = Bio::EnsEMBL::Registry->get_adaptor('human', 'core', 'slice');
-# my $ga = Bio::EnsEMBL::Registry->get_adaptor('human', 'core', 'gene');
-my $slice = $sa->fetch_by_region('toplevel', $chr, 50000000);
-my @genes = sort {$a->seq_region_start() <=> $b->seq_region_start} 
+my $sa = Bio::EnsEMBL::Registry->get_adaptor($species, 'core', 'slice');
+if(!$sa) {
+  die "Cannot get slice adaptor for the species ${species}";
+}
+
+my $slice = $sa->fetch_by_region('toplevel', $chromosome);
+warn 'Fetching all genes for chromosome '.$chromosome;
+
+my @genes = sort {$a->seq_region_start() <=> $b->seq_region_start}
             map { @{$slice->get_all_Genes(undef, undef, 1, undef, $_)} }
             @biotypes;
+
+warn "Writing genes to ${output}";
 while ( my $gene = shift @genes ) {
   my $canonical = $gene->canonical_transcript();
   my $id = $canonical->stable_id();
@@ -57,7 +87,7 @@ while ( my $gene = shift @genes ) {
     next;
   }
 
-  # THIS CODE IS NOT CORRECT. IT 
+  # THIS CODE IS NOT CORRECT. IT
   # - get all translatale exons and assumes our API truncates the exons to its start/end (translatable). It does not
   # - things are sorted by seq region start; they're were nto
   # - confuses 5' and 3' with seq region positions
@@ -86,10 +116,10 @@ while ( my $gene = shift @genes ) {
       $end_cds->seq_region_end($end_cds->seq_region_end()-3);
     }
     my $start_codon = Bio::EnsEMBL::Feature->new(
-      -start => $start_codon_start, -end => $start_codon_end, strand => $canonical->strand(), 
+      -start => $start_codon_start, -end => $start_codon_end, strand => $canonical->strand(),
       -slice => $canonical->slice(), -analysis => $canonical->analysis());
     my $end_codon = Bio::EnsEMBL::Feature->new(
-      -start => $stop_codon_start, -end => $stop_codon_end, strand => $canonical->strand(), 
+      -start => $stop_codon_start, -end => $stop_codon_end, strand => $canonical->strand(),
       -slice => $canonical->slice(), -analysis => $canonical->analysis());
 
     my @features = (
@@ -125,7 +155,7 @@ sub write_feature {
       'Bio::EnsEMBL::Feature' => 'CODON',
     }->{$r};
   }
-  print $fh join("\t", $chr, $feature->seq_region_start()-1, $feature->seq_region_end(), $type, $feature->seq_region_strand(), $id);
+  print $fh join("\t", $chromosome, $feature->seq_region_start()-1, $feature->seq_region_end(), $type, $feature->seq_region_strand(), $id);
   print $fh "\n";
 }
 
@@ -133,7 +163,7 @@ sub write_intron {
   my ($last_exon, $exon, $id) = @_;
   my $intron_start = $last_exon->seq_region_end()+1;
   my $intron_end = $exon->seq_region_start()-1;
-  print $fh join("\t", $chr, $intron_start-1, $intron_end, 'INTRON', $id);
+  print $fh join("\t", $chromosome, $intron_start-1, $intron_end, 'INTRON', $id);
   print $fh "\n";
   return;
 }

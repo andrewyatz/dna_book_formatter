@@ -20,19 +20,26 @@ import java.util.List;
 public class Html {
 
   public static final String PAGE_SIZE = "size: 350mm 350mm;";
-  public static final int DEFAULT_WIDTH = 200;
+  public static final int DEFAULT_WIDTH = 250;
+  public static final int DEFAULT_FONT_SIZE = 7;
 
   private int basesPerLine;
+  private int fontSize;
   private PrintStream ps;
   private Sequence sequence;
 
   public Html(PrintStream ps, Sequence sequence) {
-    this(DEFAULT_WIDTH, ps, sequence);
+    this(DEFAULT_FONT_SIZE, DEFAULT_WIDTH, ps, sequence);
   }
   public Html(int basesPerLine, PrintStream ps, Sequence sequence) {
+    this(DEFAULT_FONT_SIZE, basesPerLine, ps, sequence);
+  }
+
+  public Html(int fontSize, int basesPerLine, PrintStream ps, Sequence sequence) {
     this.basesPerLine = basesPerLine;
     this.ps = ps;
     this.sequence = sequence;
+    this.fontSize = fontSize;
   }
 
   public void printHeader() {
@@ -42,7 +49,7 @@ public class Html {
     ps.println("@page { "+PAGE_SIZE+"}");
     ps.println("body {");
     ps.println("font-family: monospace;");
-    ps.println("font-size: 9px;");
+    ps.println("font-size: "+fontSize+"px;");
     ps.println("}");
     ps.println(".pos {");
     ps.println("font-weight: bold;");

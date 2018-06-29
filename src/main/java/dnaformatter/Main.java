@@ -28,6 +28,17 @@ public class Main {
     ReadBed bed = new ReadBed(new File(args[1]));
     PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(new File(args[2]))));
 
+    int fontSize;
+    int basesPerLine;
+    if(args.length == 5) {
+      fontSize = Integer.parseInt(args[3]);
+      basesPerLine = Integer.parseInt(args[4]);
+    }
+    else {
+      fontSize = Html.DEFAULT_FONT_SIZE;
+      basesPerLine = Html.DEFAULT_WIDTH;
+    }
+
     // ReadFasta reader = new ReadFasta(">1\nACGT\nACGT\nACGT\nACGT\nACGT");
     System.out.println("Reading FASTA from "+args[0]);
     for(Sequence seq: reader) {
@@ -45,7 +56,7 @@ public class Main {
       // PrintStream ps = new PrintStream(System.out);
       // Html output = new Html(3, ps, seq);
       System.out.println("Writing out to " + args[2]);
-      Html output = new Html(ps, seq);
+      Html output = new Html(fontSize, basesPerLine, ps, seq);
       output.format();
     }
   }
