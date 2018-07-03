@@ -46,7 +46,7 @@ my %args = (-HOST => $host, -USER => $user, -PORT => $port);
 warn 'Loading database registry';
 Bio::EnsEMBL::Registry->load_registry_from_db(%args);
 
-my $sa = Bio::EnsEMBL::Registry->get_adaptor($specie, 'core', 'slice');
+my $sa = Bio::EnsEMBL::Registry->get_adaptor($species, 'core', 'slice');
 if(!$sa) {
 	die "Cannot get slice adaptor for the species ${species}";
 }
