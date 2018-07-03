@@ -17,6 +17,7 @@ use warnings;
 
 use Bio::EnsEMBL::ApiVersion;
 use Bio::EnsEMBL::Registry;
+use Bio::EnsEMBL::Utils::IO::FASTASerializer;
 
 use Getopt::Long;
 
