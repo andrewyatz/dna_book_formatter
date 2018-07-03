@@ -36,6 +36,7 @@ task jarHtmlToPdf(type: Jar) {
 task myRun(type: JavaExec, dependsOn: 'jar') {
   classpath sourceSets.main.runtimeClasspath
   main = "dnaformatter.PdfMain"
-  jvmArgs '-Xmx4096m', '-Xms4096m'
+  jvmArgs '-Xmx16384m', '-Xms16384m'
+  // jvmArgs '-Xmx4096m', '-Xms4096m'
   // args "new-350by350-250.html", "new-350by350-250perline.pdf"
 }

@@ -48,3 +48,27 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   HTML=html_output/${chr}.html PDF=pdf_output/${chr}.pdf gradle myRun
 done
 ```
+
+# Now with added bsub
+
+## Building HTML
+
+```bash
+mkdir -p html_output
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
+  echo Running $chr HTML production
+  bsub -I -M 16384 -R "rusage[mem=16384]" java -Xmx16G -classpath build/classes/java/main:. dnaformatter.Main fasta/${chr}.fa bed_dumps/${chr}.bed html_output/${chr}.html
+done
+```
+
+## Building PDFs
+
+```bash
+mkdir -p pdf_output
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
+  echo Running $chr PDF production
+  export HTML=html_output/${chr}.html
+  export PDF=pdf_output/${chr}.pdf
+  bsub -I -M 16384 -R "rusage[mem=16384]" gradle myRun
+done
+```
