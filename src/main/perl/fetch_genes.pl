@@ -54,6 +54,7 @@ my @biotypes = qw/protein_coding pseudogene polymorphic_pseudogene processed_pse
 my $group_lookup = $dbc->sql_helper()->execute_into_hash(-SQL => 'select name, biotype_group from biotype');
 
 my $sa = Bio::EnsEMBL::Registry->get_adaptor($species, 'core', 'slice');
+my $ga = Bio::EnsEMBL::Registry->get_adaptor($species, 'core', 'gene');
 if(!$sa) {
   die "Cannot get slice adaptor for the species ${species}";
 }
@@ -62,6 +63,15 @@ my $slice = $sa->fetch_by_region('toplevel', $chromosome);
 warn 'Fetching all genes for chromosome '.$chromosome;
 
 my @genes = sort {$a->seq_region_start() <=> $b->seq_region_start}
+            grep {
+              if(uc($chromosome) eq 'Y') { # fetch the raw gene then compare names. If they are the same then exclude
+                my $raw_gene = $ga->fetch_by_stable_id($_->stable_id());
+                ($raw_gene->seq_region_name() eq $_->seq_region_name());
+              }
+              else {
+                1;
+              }
+            } # filter out things that are actually on a par if on ChrY
             map { @{$slice->get_all_Genes(undef, undef, 1, undef, $_)} }
             @biotypes;
 
