@@ -24,7 +24,7 @@ done
 mkdir -p fasta
 for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   echo Getting Fasta $chr
-  curl -s "ftp://ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.${chr}.fa.gz" | gzcat > fasta/${chr}.fa
+  curl -s "ftp://ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.${chr}.fa.gz" | gzip -dc > fasta/${chr}.fa
   echo Wrote it to fasta/${chr}.fa
 done
 ```
