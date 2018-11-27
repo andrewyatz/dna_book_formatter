@@ -19,3 +19,5 @@
 /pdf_output
 /*pdf
 /*.zip
+*.fai
+/small_html/*

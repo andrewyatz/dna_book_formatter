@@ -69,6 +69,39 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   echo Running $chr PDF production
   export HTML=html_output/${chr}.html
   export PDF=pdf_output/${chr}.pdf
+  export GRADLE_OPTS="-Dorg.gradle.daemon=false"
   bsub -I -M 16384 -R "rusage[mem=16384]" gradle myRun
+done
+```
+
+## Front Cover Work
+
+### Building FASTAs
+
+```bash
+mkdir -p small_fasta
+perl src/main/perl/seq_subseq.pl
+```
+
+### Generating HTML
+
+```bash
+mkdir -p small_html
+gradle jar
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y; do
+  java -classpath ./build/libs/dna-formatter-0.1.0.jar dnaformatter.FrontPageMain small_fasta/${chr}.fa small_html/${chr}.html 13 370
+done
+```
+
+### Generating PDFs
+
+```bash
+mkdir -p small_pdf
+gradle jar
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y; do
+  export HTML=small_html/${chr}.html
+  export PDF=small_pdf/${chr}.pdf
+  export GRADLE_OPTS="-Dorg.gradle.daemon=false"
+  gradle myRun
 done
 ```
