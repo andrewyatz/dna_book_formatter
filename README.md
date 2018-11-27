@@ -29,6 +29,12 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 done
 ```
 
+If you do not want to use the flat files you can use the Perl API instead. The following will fetch human unmasked DNA from ensembldb.ensembl.org for the API's release number in FASTA.
+
+```bash
+perl ./src/main/perl/fetch_dna_from_db.pl --chromosome Y
+```
+
 # Creating the HTML
 
 ```bash

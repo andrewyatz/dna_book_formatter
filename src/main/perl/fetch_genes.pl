@@ -23,6 +23,7 @@ use Getopt::Long;
 
 my $output;
 my $chromosome;
+my $exclude_par;
 my ($host, $user, $port, $species, $production_db);
 GetOptions(
   'output=s' => \$output,
@@ -31,6 +32,7 @@ GetOptions(
   'port=i' => \$port,
   'user=s' => \$user,
   'species=s' => \$species,
+  'exclude_par!' => \$exclude_par,
   'production_db=s' => \$production_db) or die "Could not parse command line args";
 
 $host //= 'ensembldb.ensembl.org';
@@ -38,6 +40,7 @@ $port //= 3306;
 $user //= 'anonymous';
 $production_db //= 'ensembl_production_'.Bio::EnsEMBL::ApiVersion::software_version();
 $species //= 'homo_sapiens';
+$exclude_par //= 0;
 
 die "No chromosome given" if !$chromosome;
 die "No output location given" if !$output;
@@ -61,12 +64,26 @@ if(!$sa) {
 
 my $slice = $sa->fetch_by_region('toplevel', $chromosome);
 warn 'Fetching all genes for chromosome '.$chromosome;
+my $length = $slice->length();
 
 my @genes = sort {$a->seq_region_start() <=> $b->seq_region_start}
             grep {
-              if(uc($chromosome) eq 'Y') { # fetch the raw gene then compare names. If they are the same then exclude
-                my $raw_gene = $ga->fetch_by_stable_id($_->stable_id());
-                ($raw_gene->seq_region_name() eq $_->seq_region_name());
+              if($_->seq_region_start() >= $length || $_->seq_region_end() >= $length) {
+                0;
+              }
+              else {
+                1;
+              }
+            } # Still need to exclude anything that exceeds the size of the seq region
+            grep {
+              if($exclude_par) {
+                if(uc($chromosome) eq 'Y') { # fetch the raw gene then compare names. If they are the same then exclude
+                  my $raw_gene = $ga->fetch_by_stable_id($_->stable_id());
+                  ($raw_gene->seq_region_name() eq $_->seq_region_name());
+                }
+                else {
+                  1;
+                }
               }
               else {
                 1;
