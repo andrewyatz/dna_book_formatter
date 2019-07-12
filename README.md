@@ -45,6 +45,24 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 done
 ```
 
+## Changing attributes of the HTML output
+
+`dnaformatter.Main` takes in 6 parameters in total
+
+1. FASTA file to format
+2. BED file to markup with
+3. Output HTML location
+4. The font size used (defaults to 7pt)
+5. The number of bases per line (defaults to 250)
+6. The page size to use (defaults to `size: 350mm 350mm;`. Must be a CSS attribute as it is injected into a `@page {  }` element for printing)
+
+You can specify these to control the format of the HTML should you wish. To create a HTML report for A4 you would use
+
+```bash
+java -Xmx6G -classpath build/classes/java/main:. dnaformatter.Main \
+fasta/${chr}.fa bed_dumps/${chr}.bed html_output/${chr}.a4.html 7 150 'size: 210mm 297mm;'
+```
+
 # Creating PDF
 
 ```bash

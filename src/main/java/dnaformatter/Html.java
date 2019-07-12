@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Html {
 
-  public static final String PAGE_SIZE = "size: 350mm 350mm;";
+  public static final String DEFAULT_PAGE_SIZE = "size: 350mm 350mm;";
   public static final int DEFAULT_WIDTH = 250;
   public static final int DEFAULT_FONT_SIZE = 7;
 
@@ -27,26 +27,28 @@ public class Html {
   private int fontSize;
   private PrintStream ps;
   private Sequence sequence;
+  private String pageSize;
 
   public Html(PrintStream ps, Sequence sequence) {
-    this(DEFAULT_FONT_SIZE, DEFAULT_WIDTH, ps, sequence);
+    this(DEFAULT_FONT_SIZE, DEFAULT_WIDTH, ps, sequence, DEFAULT_PAGE_SIZE);
   }
   public Html(int basesPerLine, PrintStream ps, Sequence sequence) {
-    this(DEFAULT_FONT_SIZE, basesPerLine, ps, sequence);
+    this(DEFAULT_FONT_SIZE, basesPerLine, ps, sequence, DEFAULT_PAGE_SIZE);
   }
 
-  public Html(int fontSize, int basesPerLine, PrintStream ps, Sequence sequence) {
+  public Html(int fontSize, int basesPerLine, PrintStream ps, Sequence sequence, String pageSize) {
     this.basesPerLine = basesPerLine;
     this.ps = ps;
     this.sequence = sequence;
     this.fontSize = fontSize;
+    this.pageSize = pageSize;
   }
 
   public void printHeader() {
     ps.println("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
     ps.println("<head>");
     ps.println("<style>");
-    ps.println("@page { "+PAGE_SIZE+"}");
+    ps.println("@page { "+pageSize+"}");
     ps.println("body {");
     ps.println("font-family: monospace;");
     ps.println("font-size: "+fontSize+"px;");
