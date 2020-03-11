@@ -9,8 +9,8 @@ java -Xmx6G -classpath build/classes/java/main:. dnaformatter.Main Homo_sapiens.
 
 # Selecting the appropriate database server
 
-The examples below use the database server ensembldb.ensembl.org on port 5306, 
-an the FTP server  , which are for vertebrates.
+For vertebrates you should use the database server ensembldb.ensembl.org on port 5306
+an the FTP server ftp://ftp.ensembl.org/pub/current_fasta
 
 For non-vertebrates (Ensembl Genomes), please use server mysql-eg-publicsql.ebi.ac.uk on port 4157, 
 explained at [http://ensemblgenomes.org/info/access/mysql](http://ensemblgenomes.org/info/access/mysql),
@@ -36,8 +36,6 @@ for chr in 1 2 3 4 5 Pt Mt; do
 done
 ```
 
-
-
 # Getting FASTA
 
 ```bash
@@ -46,6 +44,16 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   echo Getting Fasta $chr
   curl -s "ftp://ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.${chr}.fa.gz" | gzip -dc > fasta/${chr}.fa
   echo Wrote it to fasta/${chr}.fa
+done
+```
+
+This is the equivalent code for A. thaliana:
+```bash
+mkdir -p fasta
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
+	echo Getting Fasta $chr
+	curl -s "ftp://ftp.ensemblgenomes.org/pub/plants/current/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.${chr}.fa.gz" | gzip -dc > fasta/${chr}.fa
+	echo Wrote it to fasta/${chr}.fa
 done
 ```
 
