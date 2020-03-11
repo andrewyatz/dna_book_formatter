@@ -27,14 +27,13 @@ public class PdfMain {
       System.out.println("# error: output filename is empty");
     }
     else {
-      System.out.println("# input: " + inputFile);
-      //String url = new File(inputFile).toURI().toURL().toString(); System.out.println("#" + url);
-      //OutputStream os = new FileOutputStream(outputFile);
-      //ITextRenderer renderer = new ITextRenderer();
-      //renderer.setDocument(url);
-      //renderer.layout();
-      //renderer.createPDF(os);
-      //os.close();
+      String url = new File(inputFile).toURI().toURL().toString(); 
+      OutputStream os = new FileOutputStream(outputFile);
+      ITextRenderer renderer = new ITextRenderer();
+      renderer.setDocument(url);
+      renderer.layout();
+      renderer.createPDF(os);
+      os.close();
     }
   }
 }
