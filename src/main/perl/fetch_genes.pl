@@ -25,6 +25,10 @@ my $output;
 my $chromosome;
 my $exclude_par;
 my ($host, $user, $port, $species, $production_db);
+
+# biotypes of valid genes, change if needed
+my @biotypes = qw/protein_coding pseudogene polymorphic_pseudogene processed_pseudogene transcribed_processed_pseudogene transcribed_unitary_pseudogene transcribed_unprocessed_pseudogene unitary_pseudogene unprocessed_pseudogene/;
+
 GetOptions(
   'output=s' => \$output,
   'chromosome=s' => \$chromosome,
@@ -36,7 +40,7 @@ GetOptions(
   'production_db=s' => \$production_db) or die "Could not parse command line args";
 
 $host //= 'ensembldb.ensembl.org';
-$port //= 3306;
+$port //= 5306;
 $user //= 'anonymous';
 $production_db //= 'ensembl_production_'.Bio::EnsEMBL::ApiVersion::software_version();
 $species //= 'homo_sapiens';
@@ -52,8 +56,6 @@ warn 'Loading database registry';
 Bio::EnsEMBL::Registry->load_registry_from_db(%args);
 warn 'Connecting to '.$production_db;
 my $dbc = Bio::EnsEMBL::DBSQL::DBConnection->new(%args, -DBNAME => $production_db );
-
-my @biotypes = qw/protein_coding pseudogene polymorphic_pseudogene processed_pseudogene transcribed_processed_pseudogene transcribed_unitary_pseudogene transcribed_unprocessed_pseudogene unitary_pseudogene unprocessed_pseudogene/;
 my $group_lookup = $dbc->sql_helper()->execute_into_hash(-SQL => 'select name, biotype_group from biotype');
 
 my $sa = Bio::EnsEMBL::Registry->get_adaptor($species, 'core', 'slice');
