@@ -34,13 +34,14 @@ task jarHtmlToPdf(type: Jar) {
 }
 
 task myRun(type: JavaExec, dependsOn: 'jar') {
+
   classpath sourceSets.main.runtimeClasspath
   main = "dnaformatter.PdfMain"
   jvmArgs '-Xmx16384m', '-Xms16384m'
 
-  // explicitely pass these env vars
-  environment "HTML",  System.getenv('HTML')
-  environment "PDF",  System.getenv('PDF')
+  // explicitely pass these system properties, dit not work with env
+  systemProperty "HTML", findProperty("HTML")
+  systemProperty "PDF", findProperty("PDF")
 
   // jvmArgs '-Xmx4096m', '-Xms4096m'
   // args "new-350by350-250.html", "new-350by350-250perline.pdf"
