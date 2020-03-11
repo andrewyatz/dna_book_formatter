@@ -7,6 +7,15 @@ gradle build
 java -Xmx6G -classpath build/classes/java/main:. dnaformatter.Main Homo_sapiens.GRCh38.dna.chromosome.22.fa genes.bed output.html
 ```
 
+# Selecting the appropriate database server
+
+The examples below use the database server ensembldb.ensembl.org on port 5306, 
+an the FTP server  , which are for vertebrates.
+
+For non-vertebrates (Ensembl Genomes), please use server mysql-eg-publicsql.ebi.ac.uk on port 4157, 
+explained at [http://ensemblgenomes.org/info/access/mysql](http://ensemblgenomes.org/info/access/mysql),
+and FTP server ftp://ftp.ensemblgenomes.org/pub/division/current , where division can be bacteria, fungi, metazoa, plants or protists.
+
 # Creating BED
 
 Assumes that Ensembl API and BioPerl are available from `../../ensembl/ensembl/modules` and `../../thirdparty/bioperl-live` respectively. Code connects to live DB and dumps all genes for a given chromsome.
@@ -14,9 +23,11 @@ Assumes that Ensembl API and BioPerl are available from `../../ensembl/ensembl/m
 ```bash
 mkdir -p bed_dumps
 for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
-perl -I ../../thirdparty/bioperl-live/ -I ../../ensembl/ensembl/modules/ src/main/perl/fetch_genes.pl --host ensembldb.ensembl.org --port 3306 --user anonymous --species human --chromosome $chr --output bed_dumps/${chr}.bed;
+perl -I ../../thirdparty/bioperl-live/ -I ../../ensembl/ensembl/modules/ src/main/perl/fetch_genes.pl --host ensembldb.ensembl.org --port 5306 --user anonymous --species human --chromosome $chr --output bed_dumps/${chr}.bed;
 done
 ```
+You 
+
 
 # Getting FASTA
 
