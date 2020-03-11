@@ -10,10 +10,10 @@ public class PdfMain {
     String inputFile;
     String outputFile;
 
-    // pick filenames from environment, explicitely passed in grade.build
+    // pick filenames from sys Property, explicitely passed in grade.build
     if(args.length == 0) {
-      inputFile = System.getenv("HTML"); 
-      outputFile = System.getenv("PDF");
+      inputFile = System.getProperty("HTML"); 
+      outputFile = System.getProperty("PDF");
     }
     else {
       inputFile = args[0];
@@ -27,13 +27,14 @@ public class PdfMain {
       System.out.println("# error: output filename is empty");
     }
     else {
-      String url = new File(inputFile).toURI().toURL().toString();
-      OutputStream os = new FileOutputStream(outputFile);
-      ITextRenderer renderer = new ITextRenderer();
-      renderer.setDocument(url);
-      renderer.layout();
-      renderer.createPDF(os);
-      os.close();
+      System.out.println("# input: " + inputFile);
+      //String url = new File(inputFile).toURI().toURL().toString(); System.out.println("#" + url);
+      //OutputStream os = new FileOutputStream(outputFile);
+      //ITextRenderer renderer = new ITextRenderer();
+      //renderer.setDocument(url);
+      //renderer.layout();
+      //renderer.createPDF(os);
+      //os.close();
     }
   }
 }
