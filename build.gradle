@@ -37,6 +37,11 @@ task myRun(type: JavaExec, dependsOn: 'jar') {
   classpath sourceSets.main.runtimeClasspath
   main = "dnaformatter.PdfMain"
   jvmArgs '-Xmx16384m', '-Xms16384m'
+
+  // explicitely pass these env vars
+  environment "HTML",  System.getenv('HTML')
+  environment "PDF",  System.getenv('PDF')
+
   // jvmArgs '-Xmx4096m', '-Xms4096m'
   // args "new-350by350-250.html", "new-350by350-250perline.pdf"
 }
