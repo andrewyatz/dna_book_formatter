@@ -97,7 +97,7 @@ fasta/${chr}.fa bed_dumps/${chr}.bed html_output/${chr}.a4.html 7 150 'size: 210
 mkdir -p pdf_output
 for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   echo Running $chr PDF production
-  HTML=html_output/${chr}.html PDF=pdf_output/${chr}.pdf gradle myRun
+  gradle myRun -PHTML=html_output/${chr}.html -PPDF=pdf_output/${chr}.pdf
 done
 ```
 
@@ -119,10 +119,8 @@ done
 mkdir -p pdf_output
 for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
   echo Running $chr PDF production
-  export HTML=html_output/${chr}.html
-  export PDF=pdf_output/${chr}.pdf
   export GRADLE_OPTS="-Dorg.gradle.daemon=false"
-  bsub -I -M 16384 -R "rusage[mem=16384]" gradle myRun
+  bsub -I -M 16384 -R "rusage[mem=16384]" gradle myRun -PHTML=html_output/${chr}.html -PPDF=pdf_output/${chr}.pdf
 done
 ```
 
@@ -151,9 +149,7 @@ done
 mkdir -p small_pdf
 gradle jar
 for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y; do
-  export HTML=small_html/${chr}.html
-  export PDF=small_pdf/${chr}.pdf
   export GRADLE_OPTS="-Dorg.gradle.daemon=false"
-  gradle myRun
+  gradle myRun -PHTML=small_html/${chr}.html -PPDF=small_pdf/${chr}.pdf
 done
 ```
