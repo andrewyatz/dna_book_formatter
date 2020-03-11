@@ -18,7 +18,7 @@ and FTP server ftp://ftp.ensemblgenomes.org/pub/division/current , where divisio
 
 # Creating BED
 
-Assumes that Ensembl API and BioPerl are available from `../../ensembl/ensembl/modules` and `../../thirdparty/bioperl-live` respectively. Code connects to live DB and dumps all genes for a given chromsome.
+Assumes that Ensembl API and BioPerl are available from `../../ensembl/ensembl/modules` and `../../thirdparty/bioperl-live` respectively. Code connects to live DB and dumps all genes for a given chromosome of the human genome:
 
 ```bash
 mkdir -p bed_dumps
@@ -26,7 +26,16 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 perl -I ../../thirdparty/bioperl-live/ -I ../../ensembl/ensembl/modules/ src/main/perl/fetch_genes.pl --host ensembldb.ensembl.org --port 5306 --user anonymous --species human --chromosome $chr --output bed_dumps/${chr}.bed;
 done
 ```
-You 
+
+This would work for Arabidopsis thaliana:
+
+```bash
+mkdir -p bed_dumps
+for chr in 1 2 3 4 5 Pt Mt; do
+	perl -I ../../thirdparty/bioperl-live/ -I ../../ensembl/ensembl/modules/ src/main/perl/fetch_genes.pl --host mysql-eg-publicsql.ebi.ac.uk --port 4157 --user anonymous --species arabidopsis_thaliana --chromosome $chr --output bed_dumps/${chr}.bed;
+done
+```
+
 
 
 # Getting FASTA
