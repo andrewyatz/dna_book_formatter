@@ -10,7 +10,7 @@ public class PdfMain {
     String inputFile;
     String outputFile;
 
-    // pick filenames from environment, note gradle does not take the same environment by default
+    // pick filenames from environment, explicitely passed in grade.build
     if(args.length == 0) {
       inputFile = System.getenv("HTML"); 
       outputFile = System.getenv("PDF");
