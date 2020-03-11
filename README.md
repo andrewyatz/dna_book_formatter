@@ -47,10 +47,10 @@ for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
 done
 ```
 
-This is the equivalent code for A. thaliana:
+This is the equivalent code for Arabidopsis thaliana:
 ```bash
 mkdir -p fasta
-for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT; do
+for chr in 1 2 3 4 5 Pt Mt; do
   echo Getting Fasta $chr
   curl -s "ftp://ftp.ensemblgenomes.org/pub/plants/current/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.${chr}.fa.gz" | gzip -dc > fasta/${chr}.fa
   echo Wrote it to fasta/${chr}.fa
