@@ -1,5 +1,15 @@
 # DNA Formatter
 
+This repository will create HTML and PDF outputs of a sequence of DNA marked up with its annotated genes. The main Java code requires a FASTA formatted file and a BED file with gene boundaries annotated. The exact format of the BED file can be found in the `fetch_genes.pl` script. The flow of execution is:
+
+1. Get your FASTA DNA
+2. Get your BED file of genes
+3. Run the Java `dnaformatter.Main` job. You need enough memory to hold the parsed genome and annotation so give it a lot
+    - You can configure the output page size at this stage
+4. Create the PDF by using `gradle myRun` 
+
+Nothing in the script assumes anything about the underlying nature of the data but will take time to run.
+
 # Synopsis
 
 ```bash
